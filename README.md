@@ -58,6 +58,7 @@ econ_digest/
 
 ### Haiku週次まとめ（Claude Haiku）
 
+- [6/22〜6/29](./articles/haiku_weekly/2026-0629.md)
 <!-- articles/haiku_weekly/ のファイルへのリンクがここに追加される -->
 
 ### Haiku月次まとめ（Claude Haiku）
