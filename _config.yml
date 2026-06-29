@@ -1,0 +1,24 @@
+title: 経済週次ダイジェスト
+description: 経済・マーケット・財政に関する最新情報を週次・月次でまとめたダイジェスト
+baseurl: "/econ_digest"
+url: "https://masauehr.github.io"
+lang: ja
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+permalink: pretty
+
+exclude:
+  - scripts/
+  - CLAUDE.md
+  - SPEC.md
+  - econ-digest.md
+  - "*.log"
+  - .claude/
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - README.md

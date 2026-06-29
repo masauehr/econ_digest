@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+  <meta name="description" content="{{ site.description }}">
+  <style>
+    :root {
+      --primary: #1a2a1a;
+      --accent: #2d4a2d;
+      --highlight: #2e7d32;
+      --link: #388e3c;
+      --text: #212121;
+      --muted: #666;
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e0e0e0;
+      --tag-bg: #e8f5e9;
+      --tag-color: #2e7d32;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    header .logo { font-size: 1.5rem; }
+    header .title-block { flex: 1; }
+    header h1 { font-size: 1.25rem; font-weight: 700; }
+    header h1 a { color: white; text-decoration: none; }
+    header h1 a:hover { opacity: 0.85; }
+    header .subtitle { font-size: 0.8rem; opacity: 0.7; margin-top: 0.15rem; }
+
+    nav {
+      background: var(--accent);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+    }
+    nav a {
+      color: #b0c8b0;
+      text-decoration: none;
+      font-size: 0.875rem;
+      padding: 0.7rem 1rem;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    nav a:hover { color: white; border-bottom-color: #81c784; }
+
+    main {
+      max-width: 860px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .content h1 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: var(--primary);
+      border-bottom: 3px solid var(--highlight);
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+    .content h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--highlight);
+      margin: 2.5rem 0 1rem;
+      padding-left: 0.8rem;
+      border-left: 4px solid var(--highlight);
+    }
+    .content h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 1.8rem 0 0.7rem;
+      color: var(--accent);
+    }
+    .content h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 1.2rem 0 0.5rem;
+    }
+    .content p { margin-bottom: 1rem; }
+    .content a { color: var(--link); text-decoration: none; }
+    .content a:hover { text-decoration: underline; }
+    .content strong { font-weight: 700; }
+    .content em { font-style: italic; }
+
+    .content ul, .content ol {
+      padding-left: 1.6rem;
+      margin-bottom: 1rem;
+    }
+    .content li { margin-bottom: 0.35rem; }
+    .content li > ul, .content li > ol { margin-top: 0.35rem; }
+
+    .content blockquote {
+      border-left: 4px solid #a5d6a7;
+      padding: 0.6rem 1.2rem;
+      background: #e8f5e9;
+      color: #555;
+      margin: 1rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .content blockquote p { margin-bottom: 0; }
+
+    .content table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1.2rem 0;
+      font-size: 0.92rem;
+    }
+    .content th {
+      background: var(--primary);
+      color: white;
+      padding: 0.6rem 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+    .content td {
+      border: 1px solid var(--border);
+      padding: 0.55rem 1rem;
+    }
+    .content tr:nth-child(even) td { background: #f5f5f5; }
+
+    .content code {
+      background: #f0f0f0;
+      border: 1px solid #e0e0e0;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.88em;
+    }
+    .content pre {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: 1.2rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.2rem 0;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .content pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    .content hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+
+    .article-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 0.7rem;
+    }
+    .article-list li {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.8rem 1.2rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .article-list li:hover {
+      border-color: var(--link);
+      box-shadow: 0 2px 8px rgba(46,125,50,0.1);
+    }
+    .article-list a {
+      font-weight: 600;
+      color: var(--link);
+      text-decoration: none;
+    }
+    .article-list a:hover { text-decoration: underline; }
+    .article-list .date {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-left: 0.7rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin: 2rem 0 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    footer a { color: var(--link); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      header { padding: 1rem; }
+      header .logo { display: none; }
+      nav { padding: 0 0.5rem; }
+      main { padding: 0 1rem; margin: 1.5rem auto; }
+      .content h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">📈</div>
+    <div class="title-block">
+      <h1><a href="{{ site.baseurl }}/">経済週次ダイジェスト</a></h1>
+      <div class="subtitle">経済・マーケット・財政の最新情報を週次・月次で自動収集・要約</div>
+    </div>
+  </header>
+  <nav>
+    <a href="{{ site.baseurl }}/">ホーム</a>
+    <a href="{{ site.baseurl }}/articles/weekly/">Ollama週次</a>
+    <a href="{{ site.baseurl }}/articles/haiku_weekly/">Haiku週次</a>
+    <a href="{{ site.baseurl }}/articles/compare/">モデル比較</a>
+    <a href="{{ site.baseurl }}/articles/monthly/">月次まとめ</a>
+    <a href="https://github.com/masauehr/econ_digest" target="_blank" rel="noopener">GitHub ↗</a>
+  </nav>
+  <main>
+    <div class="content">
+      {{ content }}
+    </div>
+  </main>
+  <footer>
+    <p>
+      自動生成 by <a href="https://github.com/masauehr/econ_digest" target="_blank" rel="noopener">masauehr/econ_digest</a>
+      &nbsp;|&nbsp; Ollama ローカルLLM &amp; Claude Haiku による自動生成
+    </p>
+  </footer>
+</body>
+</html>
