@@ -54,6 +54,7 @@ econ_digest/
 
 ### 週次まとめ（Ollama / qwen3.6:35b-mlx）
 
+- [6/22〜6/29](./articles/weekly/2026-0629.md)
 <!-- articles/weekly/ のファイルへのリンクがここに追加される -->
 
 ### Haiku週次まとめ（Claude Haiku）
@@ -71,6 +72,7 @@ econ_digest/
 
 ### 月次まとめ（Ollama）
 
+- [2026年7月](./articles/monthly/2026-07.md)
 <!-- articles/monthly/ のファイルへのリンクがここに追加される -->
 
 ### トピックス（臨時・深掘りレポート）
