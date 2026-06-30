@@ -4,6 +4,8 @@
 
 ローカルLLM（Ollama）と Claude Haiku の2モデルが同じ週の記事を生成し、Claude Sonnet が比較評価を行う。
 
+> 詳しい運用情報（構成・モデル・コマンド等）は [econ-digest.md](./econ-digest.md) を参照。
+
 ---
 
 ## 公開サイト
