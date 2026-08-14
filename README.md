@@ -35,6 +35,7 @@ launchd（macOS）で自動起動。手動実行は下記参照。
 
 ### 週次まとめ（Ollama / qwen3.6:35b-mlx）
 
+- [8/7〜8/14](./articles/weekly/2026-0814.md)
 - [7/31〜8/7](./articles/weekly/2026-0807.md)
 - [7/31〜8/7](./articles/weekly/2026-0807.md)
 - [7/24〜7/31](./articles/weekly/2026-0731.md)
@@ -55,6 +56,7 @@ launchd（macOS）で自動起動。手動実行は下記参照。
 
 ### 月次まとめ（Ollama）
 
+- [2026年8月](./articles/monthly/2026-08.md)
 - [2026年8月](./articles/monthly/2026-08.md)
 - [2026年8月](./articles/monthly/2026-08.md)
 - [2026年7月](./articles/monthly/2026-07.md)
