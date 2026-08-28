@@ -10,7 +10,7 @@ set -euo pipefail
 PROJECT_DIR="/Users/masahiro/projects/econ_digest"
 LOG_FILE="${PROJECT_DIR}/econ_digest_haiku.log"
 PYTHON_BIN="/opt/anaconda3/bin/python3"
-HAIKU_MODEL="${HAIKU_MODEL:-claude-haiku-4-5-20251001}"
+HAIKU_MODEL="${HAIKU_MODEL:-haiku}"   # Claude Code CLI モデルエイリアス（フルIDでも可）
 TODAY=$(TZ=Asia/Tokyo date +%Y-%m-%d)
 DAY_OF_MONTH=$(TZ=Asia/Tokyo date +%d)
 YEAR=$(TZ=Asia/Tokyo date +%Y)
@@ -27,21 +27,15 @@ log() {
   echo "[$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "${LOG_FILE}"
 }
 
-# --- ANTHROPIC_API_KEY の読み込み ---
-if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
-  if [ -f "${HOME}/.anthropic_env" ]; then
-    # shellcheck disable=SC1090
-    source "${HOME}/.anthropic_env"
-    log "ANTHROPIC_API_KEY を ~/.anthropic_env から読み込みました"
-  fi
-fi
-
-if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
-  log "ERROR: ANTHROPIC_API_KEY が設定されていません"
-  log "  ~/.anthropic_env に ANTHROPIC_API_KEY=sk-ant-... を記載してください"
+# --- 認証について ---
+# 【2026-08-28】haiku_agent.py を Claude Code CLI（Pro/Max サブスクリプション）方式へ変更した。
+# ANTHROPIC_API_KEY は不要。CLI 呼び出し時にサブスク認証を強制するため、
+# 環境に残っていても haiku_agent.py 側で明示的に除去する。
+# （generate_compare.py の Sonnet 評価も同様に CLI 方式を想定）
+if ! [ -x "${HOME}/.local/bin/claude" ]; then
+  log "ERROR: Claude Code CLI が見つかりません: ${HOME}/.local/bin/claude"
   exit 1
 fi
-export ANTHROPIC_API_KEY
 
 # --- 開始 ---
 log "=== econ_digest Haiku 起動チェック ==="

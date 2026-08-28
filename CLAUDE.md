@@ -8,8 +8,15 @@ GitHubで公開するプロジェクト。
 | エンジン | 実行時刻 | スクリプト |
 |---|---|---|
 | Ollama（qwen3.6:35b-mlx） | 毎週金曜 09:00 | `run_econ_ollama.sh` → `local_agent.py` |
-| Claude Haiku（Anthropic API） | 毎週金曜 13:00 | `run_econ_haiku.sh` → `haiku_agent.py` |
-| 比較ページ生成 | 13:00 以降（Haiku完了後） | `generate_compare.py` |
+| Claude Haiku（Claude Code CLI / Pro・Maxサブスク） | 毎週金曜 13:00 | `run_econ_haiku.sh` → `haiku_agent.py` |
+| 比較ページ生成＋Sonnet評価 | 13:00 以降（Haiku完了後） | `generate_compare.py` |
+
+【2026-08-28 変更】`haiku_agent.py` を Anthropic API 直叩きから Claude Code CLI
+（`claude --print --model haiku`、Pro/Max サブスクリプション経由）方式へ変更した
+（ai_news / weather_digest と同じ方式）。**ANTHROPIC_API_KEY は不要**。
+CLI は WebSearch/WebFetch/Write/Read のみ許可し記事執筆だけを行う。
+README.md / `articles/haiku_weekly/index.md` の更新・git commit/push は
+`haiku_agent.py` が決定論的に実行する。
 
 ---
 
@@ -151,4 +158,4 @@ git push origin main
 | Ollama エージェント | `/Users/masahiro/projects/econ_digest/scripts/local_agent.py` |
 | Haiku エージェント | `/Users/masahiro/projects/econ_digest/scripts/haiku_agent.py` |
 | 比較生成スクリプト | `/Users/masahiro/projects/econ_digest/scripts/generate_compare.py` |
-| ANTHROPIC_API_KEY | `~/.anthropic_env`（`ANTHROPIC_API_KEY=sk-ant-...` を記載） |
+| Claude Code CLI | `~/.local/bin/claude`（Haiku・Sonnet評価とも Pro/Max サブスクリプション経由。API キー不要） |
