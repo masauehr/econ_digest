@@ -69,6 +69,27 @@ else
   log "モード: 週次"
 fi
 
+# --- フェーズ2: オーケストレーターで事前収集＋ローカル要約（失敗しても続行）---
+# 検索 → 本文取得 → ローカル(Ollama)で圧縮要約。Haiku には生本文でなく圧縮サマリだけを渡す。
+ORCH_DIR="/Users/masahiro/projects/agent_orchestrator"
+PREFETCH_FILE="${PROJECT_DIR}/var/prefetch_${YEAR}-${WEEK_FILE_MMDD}.txt"
+PREFETCH_ARG=""
+mkdir -p "${PROJECT_DIR}/var"
+if [ -d "${ORCH_DIR}" ]; then
+  log "事前収集パイプライン(econ_prefetch)を実行します..."
+  if PYTHONPATH="${ORCH_DIR}" "${PYTHON_BIN}" -m orchestrator.cli run econ_prefetch \
+       -p out_file="${PREFETCH_FILE}" -p length=220 2>&1 | tee -a "${LOG_FILE}"; then
+    if [ -s "${PREFETCH_FILE}" ]; then
+      PREFETCH_ARG="@${PREFETCH_FILE}"
+      log "事前収集サマリ取得: ${PREFETCH_FILE}（$(grep -c '' "${PREFETCH_FILE}") 行）"
+    fi
+  else
+    log "WARN: 事前収集に失敗。--prefetch なしで続行します"
+  fi
+else
+  log "WARN: ${ORCH_DIR} が無いため事前収集をスキップします"
+fi
+
 # --- 共通: エージェント実行関数（リトライ付き）---
 run_haiku_agent() {
   local _mode="$1"
@@ -87,6 +108,7 @@ run_haiku_agent() {
         --year "${YEAR}" \
         --month "${MONTH}" \
         --model "${HAIKU_MODEL}" \
+        --prefetch "${PREFETCH_ARG}" \
         2>&1 | tee -a "${LOG_FILE}"; then
       _success=true
       break

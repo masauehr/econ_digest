@@ -260,9 +260,22 @@ PROMPT_MONTHLY_TMPL = """\
 """
 
 
+def _resolve_prefetch(value: str) -> str:
+    """--prefetch は本文テキスト、または '@/path/to/file' でファイル指定できる。"""
+    if value.startswith("@"):
+        p = Path(value[1:])
+        try:
+            return p.read_text(encoding="utf-8").strip()
+        except OSError as e:
+            log(f"WARN: prefetch ファイルを読めません（{e}）→ prefetch なしで続行")
+            return ""
+    return value
+
+
 def build_prompt(args) -> str:
     today = datetime.now(JST).strftime("%Y-%m-%d")
-    prefetch = args.prefetch if args.prefetch else "（なし — すべて WebSearch / WebFetch で収集すること）"
+    pf = _resolve_prefetch(args.prefetch) if args.prefetch else ""
+    prefetch = pf if pf else "（なし — すべて WebSearch / WebFetch で収集すること）"
     if args.mode == "monthly":
         return PROMPT_MONTHLY_TMPL.format(
             today=today, year=args.year, month=args.month,
