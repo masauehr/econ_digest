@@ -505,6 +505,21 @@ def build_system_prompt(args) -> str:
 # Ollama チャットループ
 # ------------------------------------------------------------------ #
 
+# --- オーケストレーション計測（フェーズ1）: agent_orchestrator/var/ledger.jsonl へ追記。
+#     import・記録に失敗しても本処理は継続する（挙動は変えない）。 ---
+try:
+    import sys as _sys
+    if "/Users/masahiro/projects/agent_orchestrator" not in _sys.path:
+        _sys.path.insert(0, "/Users/masahiro/projects/agent_orchestrator")
+    from orch_meter import record_ollama_response as _rec_ollama
+
+    def _meter_ollama(model, data):
+        _rec_ollama("econ_digest", model, data)
+except Exception:
+    def _meter_ollama(model, data):
+        return None
+
+
 def call_ollama(model: str, messages: list) -> dict:
     payload = {
         "model": model,
@@ -525,7 +540,9 @@ def call_ollama(model: str, messages: list) -> dict:
             timeout=600,
         )
         resp.raise_for_status()
-        return resp.json()
+        _data = resp.json()
+        _meter_ollama(model, _data)
+        return _data
     except requests.exceptions.Timeout:
         log("ERROR: Ollama タイムアウト（600s）")
         raise
