@@ -30,6 +30,25 @@ PROJECT_DIR = Path(__file__).resolve().parent.parent
 JST = timezone(timedelta(hours=9))
 DEFAULT_MODEL = "claude-haiku-4-5-20251001"
 
+# --- オーケストレーション計測（フェーズ1b）: Anthropic API の usage を共有台帳へ記録。
+#     import・記録に失敗しても本処理は継続する。 ---
+try:
+    sys.path.insert(0, "/Users/masahiro/projects/agent_orchestrator")
+    from orch_meter import record_llm as _orch_record_llm
+
+    def _rec_haiku_api(model, usage, wall_s=0.0):
+        u = usage or {}
+        get = (lambda k: getattr(u, k, None)) if not isinstance(u, dict) else u.get
+        in_tok = (int(get("input_tokens") or 0)
+                  + int(get("cache_read_input_tokens") or 0)
+                  + int(get("cache_creation_input_tokens") or 0))
+        _orch_record_llm("econ_digest", "haiku_turn", "haiku", model,
+                         in_tok, int(get("output_tokens") or 0), wall_s,
+                         billing="api")
+except Exception:
+    def _rec_haiku_api(*_a, **_k):
+        return None
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -561,6 +580,8 @@ def run_agent(args) -> bool:
         except anthropic.APIError as e:
             log(f"ERROR: Anthropic API エラー: {e}")
             raise
+
+        _rec_haiku_api(args.model, getattr(response, "usage", None))
 
         for block in response.content:
             if hasattr(block, "text") and block.text:
