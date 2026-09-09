@@ -87,6 +87,23 @@ haiku_agent.py --prefetch @econ_digest/var/prefetch_YYYY-MMDD.txt
 `orch_meter`（agent_orchestrator の安全 import シム）経由で共有台帳に
 トークン数・所要時間・コストを記録する。import・記録に失敗しても本処理は継続する。
 
+### 【2026-09-09】Sonnet 比較評価を CLI 方式へ＋採点スコアを台帳記録
+
+`generate_compare.py` の `generate_sonnet_eval` は以前 `anthropic.Anthropic()` で
+Anthropic API を直接叩いていたが（残高切れで評価が空になる障害）、
+**`orchestrator.providers.generate`（Claude Code CLI / サブスク枠）経由へ切替**た。
+`import anthropic` と `~/.anthropic_env` からの API キー読み込みは撤去。
+
+あわせて、評価プロンプト末尾に「6 観点（情報の深さ / カバレッジ / 国内経済動向 /
+読みやすさ / 情報源の明示 / マーケット分析）を Ollama 記事・Haiku 記事それぞれ
+1〜5 で採点し JSON で返す」指示を追加。返ってきた採点を `orch_meter` の
+`parse_eval_scores` で抽出し、`record_eval("econ_digest", ...)` で
+共有台帳へ `task="evaluate"` の 1 行として記録する（比較ページ本文からは JSON を除去）。
+
+- 判定: Δ = Haiku 総合点 − Ollama 総合点 ≥ −0.3 で合格（`docs/migration.md`）。
+- 集計: `python -m orchestrator.cli report --pipeline econ_digest` の「品質評価」節。
+- agent_orchestrator を import できない環境ではシムが no-op になり、比較ページ生成は継続（評価はスキップ）。
+
 ---
 
 ## 手動実行・操作コマンド

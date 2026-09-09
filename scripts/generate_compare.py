@@ -10,15 +10,47 @@ generate_compare.py — Ollama記事とHaiku記事を並べた比較ページを
 """
 
 import argparse
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-import anthropic
-
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 JST = timezone(timedelta(hours=9))
+ORCH_DIR = "/Users/masahiro/projects/agent_orchestrator"
+
+# Sonnet 採点の評価軸（比較表の行と対応させる）
+EVAL_AXES = ["情報の深さ", "カバレッジ", "国内経済動向", "読みやすさ", "情報源の明示", "マーケット分析"]
+
+# Sonnet 評価は agent_orchestrator 経由（Claude Code CLI / サブスク枠）で行い、
+# 採点スコアを共有台帳（var/ledger.jsonl）へ記録する。
+# agent_orchestrator が無い環境でも本処理を止めないよう、失敗時は無害な no-op にする。
+try:
+    sys.path.insert(0, ORCH_DIR)
+    from orch_meter import (
+        eval_json_instruction as _eval_json_instruction,
+        parse_eval_scores as _parse_eval_scores,
+        record_eval as _record_eval,
+        strip_eval_json_block as _strip_eval_json_block,
+    )
+    from orchestrator.models import registry as _orch_registry
+    from orchestrator.providers import generate as _orch_generate
+    _ORCH_OK = True
+except Exception:  # noqa: BLE001
+    _ORCH_OK = False
+
+    def _eval_json_instruction(*_a, **_k):
+        return ""
+
+    def _parse_eval_scores(*_a, **_k):
+        return {"parse_error": "orch_meter 未導入"}
+
+    def _record_eval(*_a, **_k):
+        return {}
+
+    def _strip_eval_json_block(text, *_a, **_k):
+        return text
 
 
 def log(msg: str) -> None:
@@ -62,7 +94,8 @@ def insert_li_at_top_of_ul(md_path: Path, new_li: str) -> bool:
 
 
 def generate_sonnet_eval(ollama_content: str, haiku_content: str, week_label: str) -> str:
-    client = anthropic.Anthropic()
+    if not _ORCH_OK:
+        raise RuntimeError("agent_orchestrator を import できないため Sonnet 評価をスキップ")
     today_str = datetime.now(JST).strftime("%Y-%m-%d")
 
     prompt = f"""以下の2つの経済ニュース週次まとめ記事（{week_label}）を読んで、比較・評価を行ってください。
@@ -107,21 +140,36 @@ def generate_sonnet_eval(ollama_content: str, haiku_content: str, week_label: st
 ### 総評
 
 （200〜300字程度。今週の特徴的なテーマ、各モデルの強み・弱みを端的に述べ、「両記事を合わせて読むことで〜」という締め方で締める）
-"""
+{_eval_json_instruction(EVAL_AXES, "Ollama記事（qwen3.6:35b-mlx）", "Haiku記事（claude-haiku-4-5）")}"""
 
-    message = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=2048,
-        messages=[{"role": "user", "content": prompt}],
-    )
+    # agent_orchestrator 経由で Sonnet を呼ぶ（Claude Code CLI / サブスク枠。API 課金なし）
+    spec = _orch_registry.for_tier("sonnet")
+    comp = _orch_generate(spec, "あなたは日本語記事の厳格な品質評価者です。", prompt)
+    eval_body = comp.text.strip()
 
-    eval_body = message.content[0].text.strip()
+    # 採点 JSON を抽出して共有台帳へ記録し、本文からは JSON ブロックを除去する
+    try:
+        scores = _parse_eval_scores(eval_body, EVAL_AXES)
+        _record_eval(
+            "econ_digest", scores, label=week_label,
+            in_tok=comp.in_tok, out_tok=comp.out_tok, wall_s=round(comp.wall_s, 2),
+            usd=round(comp.reported_usd or spec.cost_usd(comp.in_tok, comp.out_tok), 6),
+            baseline_model="qwen3.6:35b-mlx", candidate_model="claude-haiku-4-5",
+        )
+        if "parse_error" in scores:
+            log(f"WARN: 採点スコア抽出失敗: {scores['parse_error']}")
+        else:
+            log(f"採点記録: baseline={scores['baseline_overall']} "
+                f"candidate={scores['candidate_overall']} Δ={scores['delta']:+.2f}")
+    except Exception as e:  # noqa: BLE001
+        log(f"WARN: 採点記録に失敗: {e}")
+    eval_body = _strip_eval_json_block(eval_body)
 
     return f"""<div class="sonnet-eval" markdown="1">
 
 ## 🧠 Claude Sonnet による比較・評価（{today_str}）
 
-*両記事を読んだ Claude Sonnet 4.6 が、情報カバレッジ・分析精度・読みやすさの観点から評価します。*
+*両記事を読んだ Claude Sonnet が、情報カバレッジ・分析精度・読みやすさの観点から評価します。*
 
 ---
 
