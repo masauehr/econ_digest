@@ -8,6 +8,7 @@ title: モデル比較一覧
 Ollama（qwen3.6:35b-mlx）と Claude Haiku が同じ週の経済ニュースをどう記事にしたかを並べた比較ページの一覧です。
 
 <ul class="article-list">
+  <li><a href="{{ site.baseurl }}/articles/compare/2026-0925">9/18〜9/25</a><span class="date">2026-09-25</span></li>
   <li><a href="{{ site.baseurl }}/articles/compare/2026-0918">9/11〜9/18</a><span class="date">2026-09-18</span></li>
   <li><a href="{{ site.baseurl }}/articles/compare/2026-0911">9/4〜9/11</a><span class="date">2026-09-11</span></li>
   <li><a href="{{ site.baseurl }}/articles/compare/2026-0904">8/28〜9/4</a><span class="date">2026-09-04</span></li>
