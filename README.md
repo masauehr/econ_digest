@@ -60,6 +60,7 @@ launchd（macOS）で自動起動。手動実行は下記参照。
 
 ### 週次まとめ（Claude Haiku）
 
+- [10/9〜10/16](./articles/haiku_weekly/2026-1016.md)
 - [10/2〜10/9](./articles/haiku_weekly/2026-1009.md)
 - [9/25〜10/2](./articles/haiku_weekly/2026-1002.md)
 - [9/18〜9/25](./articles/haiku_weekly/2026-0925.md)
