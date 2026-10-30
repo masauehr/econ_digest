@@ -8,6 +8,7 @@ title: 週次まとめ一覧（Ollama）
 経済・マーケット最新情報の週次ダイジェスト記事の一覧です。毎週金曜日 09:00 に自動更新されます。
 
 <ul class="article-list">
+  <li><a href="{{ site.baseurl }}/articles/weekly/2026-1030">10/23〜10/30</a><span class="date">2026-10-30</span></li>
   <li><a href="{{ site.baseurl }}/articles/weekly/2026-1023">10/16〜10/23</a><span class="date">2026-10-23</span></li>
   <li><a href="{{ site.baseurl }}/articles/weekly/2026-1016">10/9〜10/16</a><span class="date">2026-10-16</span></li>
   <li><a href="{{ site.baseurl }}/articles/weekly/2026-1009">10/2〜10/9</a><span class="date">2026-10-09</span></li>
