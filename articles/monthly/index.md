@@ -9,6 +9,7 @@ title: 月次まとめ一覧（Ollama）
 
 <ul class="article-list">
   <li><a href="{{ site.baseurl }}/articles/monthly/2026-11">2026年11月</a><span class="date">2026-11</span></li>
+  <li><a href="{{ site.baseurl }}/articles/monthly/2026-11">2026年11月</a><span class="date">2026-11</span></li>
   <li><a href="{{ site.baseurl }}/articles/monthly/2026-10">2026年10月</a><span class="date">2026-10</span></li>
   <li><a href="{{ site.baseurl }}/articles/monthly/2026-10">2026年10月</a><span class="date">2026-10</span></li>
   <li><a href="{{ site.baseurl }}/articles/monthly/2026-10">2026年10月</a><span class="date">2026-10</span></li>

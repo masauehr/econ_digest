@@ -9,6 +9,7 @@ title: 週次まとめ一覧（Ollama）
 
 <ul class="article-list">
   <li><a href="{{ site.baseurl }}/articles/weekly/2026-1106">10/30〜11/6</a><span class="date">2026-11-06</span></li>
+  <li><a href="{{ site.baseurl }}/articles/weekly/2026-1106">10/30〜11/6</a><span class="date">2026-11-06</span></li>
   <li><a href="{{ site.baseurl }}/articles/weekly/2026-1030">10/23〜10/30</a><span class="date">2026-10-30</span></li>
   <li><a href="{{ site.baseurl }}/articles/weekly/2026-1023">10/16〜10/23</a><span class="date">2026-10-23</span></li>
   <li><a href="{{ site.baseurl }}/articles/weekly/2026-1016">10/9〜10/16</a><span class="date">2026-10-16</span></li>
