@@ -8,6 +8,7 @@ title: 週次まとめ一覧（Haiku）
 経済・マーケット最新情報の週次ダイジェスト記事（Claude Haiku 生成）の一覧です。毎週金曜日 13:00 に自動更新されます。
 
 <ul class="article-list">
+  <li><a href="{{ site.baseurl }}/articles/haiku_weekly/2026-1113">11/6〜11/13</a><span class="date">2026-11-13</span></li>
   <li><a href="{{ site.baseurl }}/articles/haiku_weekly/2026-1030">10/23〜10/30</a><span class="date">2026-10-30</span></li>
   <li><a href="{{ site.baseurl }}/articles/haiku_weekly/2026-1023">10/16〜10/23</a><span class="date">2026-10-23</span></li>
   <li><a href="{{ site.baseurl }}/articles/haiku_weekly/2026-1016">10/9〜10/16</a><span class="date">2026-10-16</span></li>
